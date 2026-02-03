@@ -37,6 +37,7 @@ async def send_notification(
             recipients.append(student.teacher_id)
     
     # Create notification records
+    notification_ids = []
     for recipient_id in recipients:
         db_notification = models.Notification(
             recipient_id=recipient_id,
@@ -45,12 +46,36 @@ async def send_notification(
             message=notification_data.message
         )
         db.add(db_notification)
+        db.flush()  # Get the ID without committing
+        notification_ids.append(db_notification.id)
     
     db.commit()
     
-    # TODO: Send actual push notification, SMS, or email
+    # Send actual notifications
+    from src.notifications.service import send_push_notification, send_sms_notification
     
-    return {"status": "success", "message": "Notifications sent"}
+    for recipient_id in recipients:
+        recipient = db.query(models.User).filter(models.User.id == recipient_id).first()
+        if recipient:
+            # Send push notification (placeholder)
+            await send_push_notification(
+                user_id=recipient_id,
+                title=notification_data.type.upper(),
+                message=notification_data.message
+            )
+            
+            # Send SMS if phone number is available (placeholder)
+            if recipient.phone:
+                await send_sms_notification(
+                    phone_number=recipient.phone,
+                    message=notification_data.message
+                )
+    
+    return {
+        "status": "success",
+        "message": "Notifications sent",
+        "notification_ids": notification_ids
+    }
 
 
 @router.get("/", response_model=List[schemas.NotificationResponse])
