@@ -93,10 +93,17 @@ async def get_audit_logs(
     total_count = query.count()
     logs = query.offset(skip).limit(limit).all()
     
+    # Get all unique user IDs and fetch users in one query to avoid N+1
+    user_ids = list(set([log.user_id for log in logs if log.user_id]))
+    users_dict = {}
+    if user_ids:
+        users = db.query(User).filter(User.id.in_(user_ids)).all()
+        users_dict = {u.id: u for u in users}
+    
     # Format response
     log_data = []
     for log in logs:
-        user = db.query(User).filter(User.id == log.user_id).first()
+        user = users_dict.get(log.user_id)
         log_data.append({
             "id": log.id,
             "user_id": log.user_id,

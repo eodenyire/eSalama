@@ -40,12 +40,15 @@ class ConnectionManager:
             for connection in self.location_connections[student_id]:
                 try:
                     await connection.send_json(message)
-                except:
+                except (WebSocketDisconnect, RuntimeError, ConnectionError) as e:
                     disconnected.append(connection)
             
             # Remove disconnected clients
             for conn in disconnected:
-                self.location_connections[student_id].remove(conn)
+                try:
+                    self.location_connections[student_id].remove(conn)
+                except (ValueError, KeyError):
+                    pass
     
     async def connect_notifications(self, websocket: WebSocket, user_id: int):
         """Connect a client to notification updates"""
@@ -68,12 +71,15 @@ class ConnectionManager:
             for connection in self.notification_connections[user_id]:
                 try:
                     await connection.send_json(message)
-                except:
+                except (WebSocketDisconnect, RuntimeError, ConnectionError) as e:
                     disconnected.append(connection)
             
             # Remove disconnected clients
             for conn in disconnected:
-                self.notification_connections[user_id].remove(conn)
+                try:
+                    self.notification_connections[user_id].remove(conn)
+                except (ValueError, KeyError):
+                    pass
 
 
 # Global connection manager instance
@@ -147,14 +153,27 @@ async def websocket_notifications_stream(
     
     Permissions:
     - Any authenticated user can connect to receive their notifications
-    """
-    # Note: In a production system, you would validate the JWT token here
-    # and extract the user_id from it
-    # For simplicity, we're using a placeholder user_id
-    # TODO: Implement proper JWT validation and extract user_id from token
     
-    # Placeholder user_id (in production, extract from validated JWT)
-    user_id = 1  # This should come from the validated token
+    Note: This is a basic implementation. In production, implement proper JWT
+    validation for WebSocket connections. The token should be validated and
+    the user_id should be extracted from the token before establishing the connection.
+    """
+    # TODO: Implement JWT validation for WebSocket connections
+    # Example implementation:
+    # try:
+    #     from src.auth.auth import decode_token
+    #     payload = decode_token(token)
+    #     user_id = payload.get("user_id")
+    #     if not user_id:
+    #         await websocket.close(code=1008)  # Policy violation
+    #         return
+    # except Exception:
+    #     await websocket.close(code=1008)  # Policy violation
+    #     return
+    
+    # TEMPORARY: For development/testing only
+    # In production, this MUST be replaced with actual JWT validation
+    user_id = 1  # Placeholder - extract from validated token in production
     
     await manager.connect_notifications(websocket, user_id)
     

@@ -73,10 +73,17 @@ async def get_attendance_report(
     # Execute query
     attendance_records = query.all()
     
+    # Get all unique student IDs and fetch students in one query to avoid N+1
+    student_ids = list(set([record.student_id for record in attendance_records]))
+    students_dict = {}
+    if student_ids:
+        students = db.query(Student).filter(Student.id.in_(student_ids)).all()
+        students_dict = {s.id: s for s in students}
+    
     # Format response
     report_data = []
     for record in attendance_records:
-        student = db.query(Student).filter(Student.id == record.student_id).first()
+        student = students_dict.get(record.student_id)
         report_data.append({
             "id": record.id,
             "student_id": student.student_id if student else None,
@@ -246,10 +253,17 @@ async def get_alerts_report(
     # Execute query
     alerts = query.all()
     
+    # Get all unique student IDs and fetch students in one query to avoid N+1
+    student_ids = list(set([alert.student_id for alert in alerts]))
+    students_dict = {}
+    if student_ids:
+        students = db.query(Student).filter(Student.id.in_(student_ids)).all()
+        students_dict = {s.id: s for s in students}
+    
     # Format response
     alert_data = []
     for alert in alerts:
-        student = db.query(Student).filter(Student.id == alert.student_id).first()
+        student = students_dict.get(alert.student_id)
         alert_data.append({
             "id": alert.id,
             "student_id": student.student_id if student else None,
