@@ -99,14 +99,75 @@ Refer to [docs/architecture.md](docs/architecture.md) for full system architectu
 
 ## Tech Stack
 
-| Component               | Technology                                                         |
-| ----------------------- | ------------------------------------------------------------------ |
-| Backend                 | Node.js (NestJS) or Django, PostgreSQL, Redis, WebSockets/MQTT     |
-| Mobile Apps             | Flutter (cross-platform) or native Android/iOS                     |
-| Gate Scanner            | Android/iOS app, optionally embedded QR hardware                   |
-| Frontend Admin Portal   | React/Next.js, Tailwind CSS/Material UI                            |
-| DevOps & Infrastructure | Docker, Kubernetes, CI/CD pipelines, Cloud Storage (AWS/GCP/Azure) |
-| Notifications           | Firebase Cloud Messaging, Twilio (SMS), Email services             |
+### Backend (Python/FastAPI)
+- **Framework**: FastAPI 0.109.2
+- **Database**: PostgreSQL with SQLAlchemy ORM
+- **Cache**: Redis
+- **Authentication**: JWT (JSON Web Tokens)
+- **QR Codes**: qrcode library with PIL
+- **Notifications**: Twilio (SMS), AWS SES (Email)
+- **API Documentation**: Automatic OpenAPI/Swagger
+
+### Frontend (React)
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Routing**: React Router v6
+- **State Management**: TanStack Query
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Maps**: React Leaflet
+- **Charts**: Recharts
+
+### Mobile Apps
+- Flutter (cross-platform) or native Android/iOS (to be implemented)
+
+### DevOps & Infrastructure
+- Docker & Docker Compose
+- CI/CD pipelines
+- Cloud deployment (AWS/GCP/Azure)
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Python 3.9+
+- Node.js 16+
+- PostgreSQL 12+
+- Git
+
+### Clone Repository
+```bash
+git clone https://github.com/eodenyire/eSalama.git
+cd eSalama
+```
+
+### Setup Backend (Python/FastAPI)
+```bash
+cd backend
+./setup.sh
+# Or manually:
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your configuration
+uvicorn src.main:app --reload
+```
+
+Backend will be available at: http://localhost:8000  
+API Documentation: http://localhost:8000/docs
+
+### Setup Frontend (React)
+```bash
+cd admin-portal
+./setup.sh
+# Or manually:
+npm install
+npm run dev
+```
+
+Frontend will be available at: http://localhost:3000
 
 ---
 

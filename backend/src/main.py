@@ -2,7 +2,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.settings import get_settings
-from config.database import engine, Base
 
 # Import routes
 from src.auth.routes import router as auth_router
@@ -13,9 +12,6 @@ from src.location_tracking.routes import router as location_router
 from src.notifications.routes import router as notifications_router
 
 settings = get_settings()
-
-# Create database tables
-Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -42,6 +38,14 @@ app.include_router(attendance_router, prefix=api_prefix)
 app.include_router(qr_router, prefix=api_prefix)
 app.include_router(location_router, prefix=api_prefix)
 app.include_router(notifications_router, prefix=api_prefix)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on startup"""
+    from config.database import engine, Base
+    # Create database tables
+    Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
