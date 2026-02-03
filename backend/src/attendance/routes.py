@@ -65,7 +65,14 @@ async def record_attendance(
     db.commit()
     db.refresh(db_attendance)
     
-    # TODO: Send notification to parent and teacher
+    # Send notification to parent and teacher
+    from src.notifications.service import send_attendance_notification
+    await send_attendance_notification(
+        db=db,
+        student=student,
+        attendance_type=attendance_data.type,
+        timestamp=attendance_data.timestamp.strftime("%H:%M")
+    )
     
     return db_attendance
 
