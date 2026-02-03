@@ -1,7 +1,7 @@
 # Core Framework
 fastapi==0.109.2
 uvicorn[standard]==0.27.1
-python-multipart==0.0.9
+python-multipart==0.0.22
 
 # Database
 sqlalchemy==2.0.27
@@ -18,7 +18,7 @@ pydantic-settings==2.1.0
 
 # QR Code Generation
 qrcode[pil]==7.4.2
-Pillow==10.2.0
+Pillow==10.3.0
 
 # Notifications
 twilio==8.13.0
