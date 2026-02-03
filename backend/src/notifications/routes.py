@@ -73,7 +73,7 @@ async def get_notifications(
             query = query.filter(models.Notification.student_id == student.id)
     
     if unread_only:
-        query = query.filter(models.Notification.is_read == False)
+        query = query.filter(models.Notification.is_read.is_(False))
     
     notifications = query.order_by(models.Notification.sent_at.desc()).all()
     return notifications

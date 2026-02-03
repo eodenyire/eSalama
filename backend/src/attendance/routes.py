@@ -1,6 +1,6 @@
 """Attendance management API routes"""
 from typing import List, Optional
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
@@ -32,7 +32,7 @@ async def record_attendance(
     # Verify QR token
     qr_token = db.query(models.QRToken).filter(
         models.QRToken.token == attendance_data.qr_code_token,
-        models.QRToken.is_used == False
+        models.QRToken.is_used.is_(False)
     ).first()
     
     if not qr_token:
@@ -41,7 +41,7 @@ async def record_attendance(
             detail="Invalid or expired QR code"
         )
     
-    if qr_token.expires_at < datetime.utcnow():
+    if qr_token.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="QR code has expired"

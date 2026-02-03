@@ -1,4 +1,5 @@
 """Main FastAPI application"""
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.settings import get_settings
@@ -13,11 +14,23 @@ from src.notifications.routes import router as notifications_router
 
 settings = get_settings()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for startup and shutdown events"""
+    # Startup
+    from config.database import engine, Base
+    Base.metadata.create_all(bind=engine)
+    yield
+    # Shutdown (if needed)
+
+
 # Initialize FastAPI app
 app = FastAPI(
     title="eSalama Schools API",
     description="Secure, real-time student tracking and communication system",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Configure CORS
@@ -38,14 +51,6 @@ app.include_router(attendance_router, prefix=api_prefix)
 app.include_router(qr_router, prefix=api_prefix)
 app.include_router(location_router, prefix=api_prefix)
 app.include_router(notifications_router, prefix=api_prefix)
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database on startup"""
-    from config.database import engine, Base
-    # Create database tables
-    Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")

@@ -1,5 +1,5 @@
 """QR Code generation and verification API routes"""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import secrets
 import qrcode
 from io import BytesIO
@@ -36,7 +36,7 @@ async def generate_qr_code(
     token = secrets.token_urlsafe(32)
     
     # Set expiration (15 minutes from now)
-    expires_at = datetime.utcnow() + timedelta(minutes=15)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
     
     # Create QR token record
     db_token = models.QRToken(
@@ -96,7 +96,7 @@ async def validate_qr_code(
         )
     
     # Check expiration
-    if qr_token.expires_at < datetime.utcnow():
+    if qr_token.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="QR code has expired"
