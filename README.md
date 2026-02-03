@@ -84,9 +84,16 @@ Refer to [docs/architecture.md](docs/architecture.md) for full system architectu
 
 ### 4. Gate Scanner App
 
-* Scans QR codes at school gates
-* Validates student identity and timestamps
-* Supports offline scanning with sync
+* **Android Application** (Complete Implementation)
+  * Real-time QR code scanning using ML Kit and CameraX
+  * Validates student identity and timestamps via backend API
+  * Automatically records attendance in the system
+  * Sends notifications to parents, teachers, and backend portal
+  * Secure JWT-based authentication for scanner operators
+  * Configurable API endpoint and scanner ID
+  * Material Design UI with intuitive scanning interface
+  * Comprehensive error handling and validation
+* Hardware scanner support (planned for future)
 
 ### 5. Backend Admin Portal
 
@@ -188,11 +195,18 @@ Frontend will be available at: http://localhost:3000
 3. Configure backend API endpoint in environment config
 4. Build and deploy to device or emulator
 
-### Gate Scanner
+### Gate Scanner (Android)
 
-1. Navigate to: `cd eSalama/gate-scanner`
-2. Configure school ID, authentication token, and backend URL
-3. Deploy to gate device
+1. Navigate to: `cd eSalama/gate-scanner/android`
+2. Open in Android Studio
+3. Build and install: `./gradlew installDebug`
+4. Configure settings:
+   - API URL (e.g., `http://10.0.2.2:8000/` for emulator)
+   - Scanner ID (e.g., `main_gate_scanner`)
+5. Login with scanner operator credentials
+6. Start scanning QR codes
+
+See [Gate Scanner README](gate-scanner/android/README.md) for detailed instructions.
 
 ### Admin Portal
 
