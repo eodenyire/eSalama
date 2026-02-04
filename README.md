@@ -84,9 +84,16 @@ Refer to [docs/architecture.md](docs/architecture.md) for full system architectu
 
 ### 4. Gate Scanner App
 
-* Scans QR codes at school gates
-* Validates student identity and timestamps
-* Supports offline scanning with sync
+* **Android Application** (Complete Implementation)
+  * Real-time QR code scanning using ML Kit and CameraX
+  * Validates student identity and timestamps via backend API
+  * Automatically records attendance in the system
+  * Sends notifications to parents, teachers, and backend portal
+  * Secure JWT-based authentication for scanner operators
+  * Configurable API endpoint and scanner ID
+  * Material Design UI with intuitive scanning interface
+  * Comprehensive error handling and validation
+* Hardware scanner support (planned for future)
 
 ### 5. Backend Admin Portal
 
@@ -99,14 +106,75 @@ Refer to [docs/architecture.md](docs/architecture.md) for full system architectu
 
 ## Tech Stack
 
-| Component               | Technology                                                         |
-| ----------------------- | ------------------------------------------------------------------ |
-| Backend                 | Node.js (NestJS) or Django, PostgreSQL, Redis, WebSockets/MQTT     |
-| Mobile Apps             | Flutter (cross-platform) or native Android/iOS                     |
-| Gate Scanner            | Android/iOS app, optionally embedded QR hardware                   |
-| Frontend Admin Portal   | React/Next.js, Tailwind CSS/Material UI                            |
-| DevOps & Infrastructure | Docker, Kubernetes, CI/CD pipelines, Cloud Storage (AWS/GCP/Azure) |
-| Notifications           | Firebase Cloud Messaging, Twilio (SMS), Email services             |
+### Backend (Python/FastAPI)
+- **Framework**: FastAPI 0.109.2
+- **Database**: PostgreSQL with SQLAlchemy ORM
+- **Cache**: Redis
+- **Authentication**: JWT (JSON Web Tokens)
+- **QR Codes**: qrcode library with PIL
+- **Notifications**: Twilio (SMS), AWS SES (Email)
+- **API Documentation**: Automatic OpenAPI/Swagger
+
+### Frontend (React)
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Routing**: React Router v6
+- **State Management**: TanStack Query
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Maps**: React Leaflet
+- **Charts**: Recharts
+
+### Mobile Apps
+- Flutter (cross-platform) or native Android/iOS (to be implemented)
+
+### DevOps & Infrastructure
+- Docker & Docker Compose
+- CI/CD pipelines
+- Cloud deployment (AWS/GCP/Azure)
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Python 3.9+
+- Node.js 16+
+- PostgreSQL 12+
+- Git
+
+### Clone Repository
+```bash
+git clone https://github.com/eodenyire/eSalama.git
+cd eSalama
+```
+
+### Setup Backend (Python/FastAPI)
+```bash
+cd backend
+./setup.sh
+# Or manually:
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your configuration
+uvicorn src.main:app --reload
+```
+
+Backend will be available at: http://localhost:8000  
+API Documentation: http://localhost:8000/docs
+
+### Setup Frontend (React)
+```bash
+cd admin-portal
+./setup.sh
+# Or manually:
+npm install
+npm run dev
+```
+
+Frontend will be available at: http://localhost:3000
 
 ---
 
@@ -127,11 +195,18 @@ Refer to [docs/architecture.md](docs/architecture.md) for full system architectu
 3. Configure backend API endpoint in environment config
 4. Build and deploy to device or emulator
 
-### Gate Scanner
+### Gate Scanner (Android)
 
-1. Navigate to: `cd eSalama/gate-scanner`
-2. Configure school ID, authentication token, and backend URL
-3. Deploy to gate device
+1. Navigate to: `cd eSalama/gate-scanner/android`
+2. Open in Android Studio
+3. Build and install: `./gradlew installDebug`
+4. Configure settings:
+   - API URL (e.g., `http://10.0.2.2:8000/` for emulator)
+   - Scanner ID (e.g., `main_gate_scanner`)
+5. Login with scanner operator credentials
+6. Start scanning QR codes
+
+See [Gate Scanner README](gate-scanner/android/README.md) for detailed instructions.
 
 ### Admin Portal
 
