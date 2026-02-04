@@ -11,6 +11,10 @@ from src.attendance.routes import router as attendance_router
 from src.qr_verification.routes import router as qr_router
 from src.location_tracking.routes import router as location_router
 from src.notifications.routes import router as notifications_router
+from src.reports.routes import router as reports_router
+from src.users.routes import router as users_router
+from src.audit_logs.routes import router as audit_logs_router
+from src.streaming.routes import router as streaming_router
 
 settings = get_settings()
 
@@ -51,6 +55,10 @@ app.include_router(attendance_router, prefix=api_prefix)
 app.include_router(qr_router, prefix=api_prefix)
 app.include_router(location_router, prefix=api_prefix)
 app.include_router(notifications_router, prefix=api_prefix)
+app.include_router(reports_router, prefix=api_prefix)
+app.include_router(users_router, prefix=api_prefix)
+app.include_router(audit_logs_router, prefix=api_prefix)
+app.include_router(streaming_router, prefix=api_prefix)
 
 
 @app.get("/")
