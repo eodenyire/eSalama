@@ -137,19 +137,43 @@ Refer to [docs/architecture.md](docs/architecture.md) for full system architectu
 
 ## Quick Start
 
-### Prerequisites
+### Docker Compose (Recommended)
+
+The fastest way to bring up the entire stack (PostgreSQL, Redis, Backend API, Admin Portal):
+
+```bash
+git clone https://github.com/eodenyire/eSalama.git
+cd eSalama
+cp .env.example .env          # adjust values if needed
+docker compose up --build
+```
+
+| Service      | URL                          |
+|-------------|------------------------------|
+| Backend API  | http://localhost:8000        |
+| API Docs     | http://localhost:8000/docs   |
+| Admin Portal | http://localhost:3000        |
+
+To stop: `docker compose down`  
+To reset the database volume: `docker compose down -v`
+
+---
+
+### Manual Setup
+
+#### Prerequisites
 - Python 3.9+
 - Node.js 16+
 - PostgreSQL 12+
 - Git
 
-### Clone Repository
+#### Clone Repository
 ```bash
 git clone https://github.com/eodenyire/eSalama.git
 cd eSalama
 ```
 
-### Setup Backend (Python/FastAPI)
+#### Setup Backend (Python/FastAPI)
 ```bash
 cd backend
 ./setup.sh
@@ -165,7 +189,7 @@ uvicorn src.main:app --reload
 Backend will be available at: http://localhost:8000  
 API Documentation: http://localhost:8000/docs
 
-### Setup Frontend (React)
+#### Setup Frontend (React)
 ```bash
 cd admin-portal
 ./setup.sh

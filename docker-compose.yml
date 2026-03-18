@@ -1,3 +1,9 @@
+# Root-level docker-compose for eSalama development environment.
+# Delegates to infra/docker-compose.yml.
+# Usage: docker compose up --build
+#
+# Copy .env.example to .env and adjust values before running.
+
 version: "3.9"
 
 services:
@@ -31,7 +37,7 @@ services:
 
   backend:
     build:
-      context: ../backend
+      context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
@@ -53,7 +59,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - ../backend:/app
+      - ./backend:/app
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 15s
@@ -62,7 +68,7 @@ services:
 
   admin-portal:
     build:
-      context: ../admin-portal
+      context: ./admin-portal
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
@@ -72,7 +78,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ../admin-portal:/app
+      - ./admin-portal:/app
       - /app/node_modules
 
 volumes:
